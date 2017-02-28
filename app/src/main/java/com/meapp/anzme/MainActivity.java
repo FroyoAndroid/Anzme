@@ -25,11 +25,11 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity {
 
     private NeuraApiClient mNeuraApiClient;
-    private String NEURA_APP_UID = "ba13394b9ff69d5880b6bf13fcffccd3c642f4d5515967ec3156de20f7e13f54",
-            NEURA_APP_SECRET = "8b1dac7a7aba06b14f182b28c2680f7b877d8f87ca7527cc7fe105a082334256",
+    private String NEURA_APP_UID = "16c1b4abfde7972184aebf4d1142e16a89b9cb1b94569dd7c2c7faeb306f83b6",
+            NEURA_APP_SECRET = "debae31896806c4e252c7d5b3b2ea14bd266dfc7465b2e6566bb78aaf44ca7b0",
             API_URL = "https://finup.co/order/get9/adduser.php?",
-            NEURA_USERID = "",
-            ACCESS_TOKEN = "";
+            NEURA_USERID = "test",
+            ACCESS_TOKEN = "test";
     private WebView clientWebview;
 
 
