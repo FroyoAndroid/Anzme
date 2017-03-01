@@ -1,5 +1,7 @@
 package com.meapp.anzme;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,14 +33,15 @@ public class MainActivity extends AppCompatActivity {
             NEURA_USERID = "test",
             ACCESS_TOKEN = "test";
     private WebView clientWebview;
-
+    private Context context;
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         clientWebview = (WebView) findViewById(R.id.clientWebview);
-        clientWebview.loadUrl("https://www.finup.co/c2/sigma/mobile/");
         WebSettings clientWebSetting = clientWebview.getSettings();
         clientWebSetting.setBuiltInZoomControls(true);
         clientWebSetting.setJavaScriptEnabled(true);
@@ -49,7 +52,18 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        init();
+
+        context = this.getApplicationContext();
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
+        String ID = sharedPref.getString("NEURA_ID","");
+        String TOKEN = sharedPref.getString("AUTH_TOKEN", "");
+        Toast.makeText(getApplicationContext(), "ID : " + ID + ", TOKEN :" + TOKEN, Toast.LENGTH_LONG).show();
+        if(ID == "" && TOKEN == "") {
+            init();
+        }else {
+            clientWebview.loadUrl("https://www.finup.co/c2/sigma/mobile/index.php?neurauser=" + ID + "&authkey=" + TOKEN);
+        }
     }
 
     @Override
@@ -90,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 NEURA_USERID = authenticateData.getNeuraUserId();
                 ACCESS_TOKEN = authenticateData.getAccessToken();
                 saveNeuraDetails();
+                clientWebview.loadUrl("https://www.finup.co/c2/sigma/mobile/index.php?neurauser=" + NEURA_USERID + "&authkey=" + ACCESS_TOKEN);
             }
 
             @Override
@@ -103,6 +118,10 @@ public class MainActivity extends AppCompatActivity {
     private void saveNeuraDetails() {
         // call the execute method here
         new SendData().execute();
+        //saving as persistence storage
+        editor.putString("NEURA_ID", NEURA_USERID);
+        editor.putString("AUTH_TOKEN", ACCESS_TOKEN);
+        editor.commit();
     }
 
     class SendData extends AsyncTask<Void, Void, String> {
